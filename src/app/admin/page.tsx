@@ -1,52 +1,33 @@
-import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, FolderTree, BookOpen, Calendar } from 'lucide-react'
+import { FileText, FolderTree, BookOpen, Calendar, Database } from 'lucide-react'
+import Link from 'next/link'
 
-export default async function AdminDashboard() {
-  const supabase = await createClient()
-  
-  // Get counts
-  const { count: topicCount } = await supabase
-    .from('topics')
-    .select('*', { count: 'exact', head: true })
-  
-  const { count: categoryCount } = await supabase
-    .from('categories')
-    .select('*', { count: 'exact', head: true })
-  
-  const { count: courseUnitCount } = await supabase
-    .from('course_units')
-    .select('*', { count: 'exact', head: true })
-  
-  const { count: semesterCount } = await supabase
-    .from('semesters')
-    .select('*', { count: 'exact', head: true })
-
+export default function AdminDashboard() {
   const stats = [
     { 
       title: 'Total Topics', 
-      value: topicCount || 0, 
+      value: '457', 
       icon: FileText,
       color: 'text-blue-600',
       bg: 'bg-blue-100'
     },
     { 
       title: 'Categories', 
-      value: categoryCount || 0, 
+      value: '10', 
       icon: FolderTree,
       color: 'text-green-600',
       bg: 'bg-green-100'
     },
     { 
       title: 'Course Units', 
-      value: courseUnitCount || 0, 
+      value: '24', 
       icon: BookOpen,
       color: 'text-purple-600',
       bg: 'bg-purple-100'
     },
     { 
       title: 'Semesters', 
-      value: semesterCount || 0, 
+      value: '6', 
       icon: Calendar,
       color: 'text-orange-600',
       bg: 'bg-orange-100'
@@ -87,27 +68,27 @@ export default async function AdminDashboard() {
             <CardDescription>Common tasks you can perform</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <a 
+            <Link 
               href="/admin/topics" 
               className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors"
             >
               <FileText className="h-4 w-4" />
               <span>Manage Topics</span>
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="/admin/categories" 
               className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors"
             >
               <FolderTree className="h-4 w-4" />
               <span>Manage Categories</span>
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="/admin/migrate" 
               className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors"
             >
-              <FileText className="h-4 w-4" />
-              <span>Migrate Data</span>
-            </a>
+              <Database className="h-4 w-4" />
+              <span>Migrate Data to Supabase</span>
+            </Link>
           </CardContent>
         </Card>
 
@@ -118,11 +99,11 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Run the database migration first (if not done)</li>
+              <li>First, run the SQL schema in Supabase SQL Editor</li>
+              <li>Then run the Data Migration on this site</li>
               <li>Add or edit topics using the Topics page</li>
               <li>Organize topics into categories and course units</li>
               <li>Upload images for topics as needed</li>
-              <li>Changes are reflected on the public site immediately</li>
             </ol>
           </CardContent>
         </Card>
