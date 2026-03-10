@@ -9,13 +9,9 @@ import {
   Calendar,
   Settings,
   LogOut,
-  Upload,
-  Database,
-  Menu,
-  X
+  Database
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Suspense } from 'react'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -26,7 +22,7 @@ const navItems = [
   { href: '/admin/migrate', label: 'Data Migration', icon: Database },
 ]
 
-function SidebarContent() {
+async function Sidebar() {
   return (
     <>
       <div className="flex h-16 items-center border-b px-6">
@@ -75,7 +71,7 @@ export default async function AdminLayout({
     <div className="flex h-screen overflow-hidden">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r bg-background">
-        <SidebarContent />
+        <Sidebar />
       </aside>
       
       {/* Main Content */}
