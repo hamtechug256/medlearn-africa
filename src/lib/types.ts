@@ -68,7 +68,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Heart',
     color: '#ef4444',
     semesterId: 'year-1-semester-1',
-    keywords: ['anatomy', 'physiology', 'skeletal', 'muscular', 'blood', 'cardiovascular', 'lymphatic', 'digestive', 'terms-used', 'atoms', 'molecules', 'compounds', 'cells', 'tissues', 'organs']
+    keywords: ['anatomy and physiology', 'anatomy of the', 'physiology of the', 'skeletal system', 'muscular system', 'blood and its composition', 'cardiovascular system notes', 'lymphatic system notes', 'digestive system notes', 'terms used in anatomy', 'atoms molecules and compounds', 'disease of lymph vessels', 'benign prostatic hyperplasia', 'fluid and electrolyte imbalance']
   },
   {
     id: 'dnd-112',
@@ -78,7 +78,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'BookOpen',
     color: '#3b82f6',
     semesterId: 'year-1-semester-1',
-    keywords: ['history of nursing', 'ethical', 'ethics', 'medico-legal', 'nursing procedure', 'general principles', 'standards of care']
+    keywords: ['history of nursing', 'ethical', 'ethics', 'medico-legal', 'nursing procedure', 'general principles', 'standards of care', 'legal aspects and national policies', 'legal aspects']
   },
   {
     id: 'dnd-113',
@@ -139,7 +139,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Stethoscope',
     color: '#ef4444',
     semesterId: 'year-1-semester-2',
-    keywords: ['medicine introduction', 'cardiovascular disorders', 'signs and symptoms cardiovascular', 'inflammatory disorders heart', 'pericarditis', 'myocarditis', 'endocarditis', 'congestive cardiac failure', 'rheumatic heart', 'thrombus', 'embolus', 'hypertension', 'arteriosclerosis', 'atherosclerosis']
+    keywords: ['medicine introduction and general causes', 'cardiovascular disorders', 'signs and symptoms of cardiovascular', 'inflammatory disorders of the heart', 'pericarditis', 'myocarditis', 'infective endocarditis', 'congestive cardiac failure', 'rheumatic heart disease', 'thrombus and embolus', 'hypertension', 'arteriosclerosis and atherosclerosis', 'brucellosis', 'urinary tract infections', 'tuberculosis', 'malaria', 'cholera', 'typhoid fever', 'yellow fever', 'rabies', 'anthrax', 'leprosy', 'schistosomiasis', 'trypanosomiasis', 'dracunculosis', 'elephantiasis', 'onchocerciasis', 'helminthic diseases', 'sexually transmitted diseases', 'gonorrhoea', 'syphilis', 'genital ulcer syndrome', 'inguinal buboes', 'syndromic management of sti', 'pelvic inflammatory diseases', 'ovarian cysts', 'uterine fibroids', 'cervical ectropion', 'menstrual disorders', 'dysmenorrhoea', 'menorrhagia', 'metrorrhagia', 'polymenorrhoea', 'premenstrual syndrome', 'amenorrhoea', 'precocious puberty', 'dysentery', 'ebola haemorrhagic fevers', 'ebola', 'congenital toxoplasmosis', 'toxoplasmosis', 'dwarfism', 'panhypopituitarism', 'cushing s syndrome', 'cushing', 'liver cirrhosis', 'cirrhosis', 'systemic lupus erythematosus', 'sle', 'systemic lupus', 'organophosphates poisoning', 'organophosphates', 'obstetric vaginal fistula', 'vaginal fistula', 'pelvic organ prolapse', 'pop', 'introduction to communicable diseases', 'communicable diseases', 'gastritis lecture', 'gastroenteritis ge', 'gastroenteritis', 'polycystic kidney disease']
   },
   {
     id: 'dnd-124',
@@ -170,7 +170,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Brain',
     color: '#8b5cf6',
     semesterId: 'year-2-semester-1',
-    keywords: ['nervous system disorders', 'meningitis', 'encephalitis', 'cerebrovascular accident', 'stroke', 'unconsciousness', 'coma', 'poliomyelitis', 'epilepsy', 'status epilepticus', 'seizure', 'parkinsons', 'trigeminal neuralgia', 'bells palsy', 'transverse myelitis', 'spinal cord', 'cerebral palsy', 'hypoxic ischemic', 'intracranial hemorrhage']
+    keywords: ['nervous system disorders', 'meningitis', 'encephalitis lecture', 'cerebrovascular accident', 'stroke', 'unconsciousness coma', 'unconsciousness', 'coma', 'poliomyelitis lecture', 'epilepsy', 'status epilepticus', 'seizure disorders', 'parkinsons disease', 'parkinson s disease', 'parkinson', 'parkinsons', 'trigeminal neuralgia', 'bells palsy', 'facial nerve palsy', 'transverse myelitis', 'spinal cord compression', 'hypoxic ischemic', 'intracranial hemorrhage', 'introduction to unconsciousness']
   },
   {
     id: 'dnd-213',
@@ -180,7 +180,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Zap',
     color: '#f59e0b',
     semesterId: 'year-2-semester-1',
-    keywords: ['acromegaly', 'gigantism', 'dwarfism', 'thyrotoxicosis', 'addisons disease', 'cushings syndrome', 'diabetes mellitus', 'pheochromocytoma', 'hypercalcemia', 'hyperaldosteronism']
+    keywords: ['acromegaly', 'gigantism', 'dwarfism panhypopituitarism', 'thyrotoxicosis', 'addisons disease', 'adrenal insufficiency', 'cushings syndrome', 'cushing s syndrome', 'cushing', 'cushings', 'diabetes mellitus', 'pheochromocytoma', 'hypercalcemia', 'hyperaldosteronism']
   },
   // Year 2 Semester 2
   {
@@ -191,7 +191,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Eye',
     color: '#3b82f6',
     semesterId: 'year-2-semester-2',
-    keywords: ['ophthalmology', 'eye anatomy', 'eye trauma', 'foreign body eye', 'conjunctivitis', 'corneal ulcers', 'cataract', 'congenital cataracts', 'glaucoma', 'stye', 'hordeolum', 'strabismus', 'proptosis', 'exophthalmos', 'trachoma', 'visual impairment', 'eye infections', 'eye injuries']
+    keywords: ['ophthalmology', 'eye anatomy', 'eye trauma', 'foreign body eye', 'conjunctivitis', 'corneal ulcers', 'cataract', 'congenital cataracts', 'glaucoma', 'stye', 'hordeolum', 'strabismus', 'proptosis', 'exophthalmos', 'trachoma', 'visual impairment', 'eye infections', 'eye injuries', 'care of the patient', 'patients eyes', 'patient s eyes', 'foreign body in the eye']
   },
   {
     id: 'dnd-222',
@@ -201,7 +201,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Headphones',
     color: '#06b6d4',
     semesterId: 'year-2-semester-2',
-    keywords: ['otitis media', 'peritonsillar', 'ent', 'ear nose throat', 'hearing impairment', 'tumors ent', 'removal foreign bodies ear nose']
+    keywords: ['otitis media', 'peritonsillar', 'ear nose throat', 'hearing impairment', 'common tumors of ear', 'removal of foreign bodies', 'care of the patients ears', 'tumors of ear nose']
   },
   {
     id: 'dnd-223',
@@ -211,7 +211,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Scissors',
     color: '#ef4444',
     semesterId: 'year-2-semester-2',
-    keywords: ['surgical nursing', 'aseptic technique', 'peri-operative', 'post-operative', 'surgical shock', 'haemorrhage', 'hemorrhage', 'suturing', 'fractures', 'orthopedic', 'traction', 'burns', 'gangrene', 'dressings', 'resuscitation', 'first aid', 'stings bites', 'under water seal drainage']
+    keywords: ['surgical nursing', 'aseptic technique', 'peri-operative care', 'post-operative nursing', 'surgical shock', 'haemorrhage nursing', 'haemorrhage', 'hemorrhage', 'suturing of the wound', 'fractures', 'orthopedic nursing care', 'traction in nursing', 'burns lecture notes', 'gangrene', 'dressings', 'resuscitation', 'first aid', 'stings and bites', 'under water seal drainage', 'peptic ulcer disease', 'tendonitis', 'bursitis', 'arthritis', 'osteoarthritis', 'ankylosing spondylitis', 'paget disease', 'paget', 'pagets', 'osteoporosis', 'hodgkin disease', 'hodgkin s disease', 'hodgkin', 'hodgkins', 'hodgkins disease', 'tumors neoplasms', 'tumors (neoplasms)', 'natural body defence', 'immunity']
   },
   {
     id: 'dnd-224',
@@ -221,7 +221,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Syringe',
     color: '#8b5cf6',
     semesterId: 'year-2-semester-2',
-    keywords: ['instilling medication', 'shortening drains', 'colostomy care', 'paracentesis', 'lumbar puncture', 'gastronomy feeding', 'gastric lavage', 'tracheostomy care']
+    keywords: ['instilling medication', 'shortening drains', 'perform shortening', 'colostomy care', 'paracentesis', 'lumbar puncture', 'gastronomy feeding', 'gastric lavage', 'tracheostomy care', 'perform colostomy', 'prepare for neural assessment', 'neural assessment', 'carry out gastric', 'prepare for abdominis', 'perform tracheostomy']
   },
   // Year 3 Semester 1
   {
@@ -232,7 +232,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Users',
     color: '#10b981',
     semesterId: 'year-3-semester-1',
-    keywords: ['primary health care', 'phc', 'community based', 'cbhc', 'community entry', 'community survey', 'community assessment', 'community diagnosis', 'community mobilization', 'community organization', 'community participation', 'community empowerment', 'community dialogue', 'techniques community health', 'home visiting', 'sustainable development goals', 'sdgs', 'integrated disease surveillance', 'concepts of primary']
+    keywords: ['primary health care', 'phc', 'community based health care', 'cbhc', 'community entry', 'community survey', 'community assessment', 'community diagnosis', 'community mobilization', 'community organization', 'community participation', 'community empowerment', 'community dialogue', 'techniques used to establish community', 'home visiting in community', 'sustainable development goals', 'sdgs', 'integrated disease surveillance', 'concepts of primary health care', 'concept of the community', 'support supervision', 'community based rehabilitative', 'waste management', 'stages of disaster', 'disaster preparedness', 'stakeholders in disaster', 'occupational health hazards', 'occupational health service program', 'occupational health and safety', 'school health program', 'school health', 'artificial disaster prevention', 'prevention and control of disasters', 'hazard prevention and control', 'injection safety and management', 'injection safety']
   },
   {
     id: 'dnd-312',
@@ -252,7 +252,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Briefcase',
     color: '#f59e0b',
     semesterId: 'year-3-semester-1',
-    keywords: ['health service management', 'levels hospital management', 'human resource management', 'human resource planning', 'job analysis', 'recruitment selection', 'performance appraisal', 'staff delegation', 'directing management', 'organizing function', 'management theories', 'management styles', 'leadership introduction', 'leadership styles', 'leadership theories', 'teamwork', 'team planning', 'conflict resolution', 'negotiation skills', 'financial management', 'budgeting', 'accountability', 'equipment supplies', 'transport management']
+    keywords: ['health service management', 'levels of hospital management', 'human resource management', 'human resource planning', 'job analysis', 'recruitment and selection', 'performance appraisal', 'staff delegation', 'directing in management', 'organizing as a function', 'management theories and styles', 'leadership introduction', 'leadership styles types', 'leadership styles/types', 'leadership theories', 'teamwork team planning', 'teamwork/team planning', 'teamwork', 'team planning', 'team process', 'conflict resolution', 'negotiation skills', 'financial management budgeting', 'management of equipment', 'transport management', 'business', 'business enterprise', 'entrepreneurship', 'business planning', 'business start-ups', 'business idea', 'joint stock companies', 'cooperatives', 'partnerships', 'franchising', 'money matters', 'managing business risks', 'customer care', 'marketing', 'innovation', 'key government policies', 'the entrepreneur', 'workers compensation act', 'work related injuries', 'small business in the economy', 'types/nature', 'forms of business']
   },
   // Year 3 Semester 2
   {
@@ -263,7 +263,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Baby',
     color: '#f59e0b',
     semesterId: 'year-3-semester-2',
-    keywords: ['paediatrics', 'pediatric', 'growth development child', 'adolescent', 'nutrition children', 'malnutrition', 'immunization', 'imci', 'integrated management childhood', 'assess classify sick child', 'sick young infant', 'measles', 'chicken pox', 'mumps', 'tetanus', 'sickle cell', 'eye infections children', 'eye injuries children', 'eating disorders children', 'mood disorders children', 'adhd', 'attention deficit', 'autism', 'mental retardation', 'cerebral palsy', 'intersexual disabilities', 'neonatal', 'newborn', 'infant']
+    keywords: ['paediatrics', 'pediatric', 'growth and development of a child', 'adolescent', 'nutrition in children', 'malnutrition in children', 'immunization', 'imci', 'integrated management of childhood', 'assessing and classification of a sick child', 'sick young infant', 'measles', 'chicken pox', 'mumps', 'tetanus', 'sickle cell disease', 'eye infections in children', 'eye injuries in children', 'eating disorders in children', 'mood disorders in children', 'adhd', 'attention deficit', 'autism', 'mental retardation', 'intellectual disability', 'cerebral palsy', 'intersexual disabilities', 'neonatal', 'newborn', 'infant', 'apnea', 'hiv/aids in children', 'hiv & aids in children', 'hiv / aids treatment', 'hiv aids treatment', 'clinical manifestation of hiv', 'jaundice hyperbilirubinemia', 'jaundice', 'respiratory distress syndrome', 'meconium aspiration', 'broncho pulmonary dysplasia', 'osteopenia of prematurity', 'osteogenesis imperfecta', 'osteomyelitis', 'reye syndrome', 'reye s syndrome', 'reyes syndrome', 'reye', 'reyes', 'hydrocele', 'infertility', 'family planning', 'abortion', 'abortions', 'septic abortion', 'threatened abortion', 'incomplete abortion', 'post abortion care', 'habitual abortion', 'safe motherhood', 'ectopic pregnancy', 'dysfunctional uterine bleeding', 'care of a child under going eye surgery']
   },
   {
     id: 'dnd-322',
@@ -273,7 +273,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Brain',
     color: '#8b5cf6',
     semesterId: 'year-3-semester-2',
-    keywords: ['mental health', 'psychiatric', 'anxiety disorders', 'panic attacks', 'bipolar', 'schizophrenia', 'catatonic stupor', 'substance abuse', 'suicide', 'suicidal behaviour', 'aggression violence', 'assessment mentally ill']
+    keywords: ['mental health', 'psychiatric', 'anxiety disorders', 'panic attacks and disorders', 'bipolar affective disorder', 'schizophrenia', 'catatonic stupor', 'substance abuse', 'suicide and suicidal', 'aggression and violence', 'assessment of the mentally ill', 'post traumatic stress', 'ptsd', 'general paralysis of the insane', 'gpi', 'law and mental illness']
   },
   {
     id: 'dnd-323',
@@ -283,7 +283,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Pill',
     color: '#10b981',
     semesterId: 'year-3-semester-2',
-    keywords: ['antipsychotics', 'antidepressants', 'anticonvulsants', 'mood stabilizers', 'anxiolytic', 'hypnotic agents', 'narcotics', 'storage narcotics']
+    keywords: ['antipsychotics', 'antidepressants', 'anticonvulsants', 'mood stabilizers', 'anxiolytic and hypnotic', 'narcotics', 'storage of narcotics', 'gonadotropin drugs', 'drugs used in labor', 'hepatitis b', 'androgens', 'antineoplastic agents', 'drug classification', 'terminologies and sources of drugs', 'erectile dysfunction medications', 'erectile dysfunction', 'immunological agents']
   },
   {
     id: 'dnd-324',
@@ -293,7 +293,7 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Heart',
     color: '#ec4899',
     semesterId: 'year-3-semester-2',
-    keywords: ['palliative care', 'pain assessment', 'pain management', 'symptoms control', 'communication palliative', 'breaking bad news', 'bereavement', 'death dying', 'nearing death awareness', 'anger issues palliative', 'spirituality palliative', 'advance directives', 'ethics end of life', 'euthanasia', 'will making', 'psychosocial support terminally ill', 'palliative care emergencies']
+    keywords: ['palliative care', 'pain assessment', 'pain management', 'symptoms control', 'communication in palliative', 'breaking of bad news', 'bereavement', 'death and dying', 'nearing death awareness', 'anger issues in palliative', 'spirituality in palliative', 'advance directives in palliative', 'ethics at the end of life', 'euthanasia', 'will making', 'psychosocial support to terminally', 'palliative care emergencies']
   },
   {
     id: 'dnd-325',
@@ -303,7 +303,17 @@ export const courseUnitsData: CourseUnit[] = [
     icon: 'Hand',
     color: '#f43f5e',
     semesterId: 'year-3-semester-2',
-    keywords: ['skin allergies', 'plant allergies', 'dermatitis', 'eczema', 'atopic dermatitis', 'psoriasis', 'acne vulgaris', 'onychomycosis', 'furunculosis', 'scabies']
+    keywords: ['skin allergies', 'plant allergies', 'dermatitis', 'eczema', 'atopic dermatitis', 'psoriasis', 'acne vulgaris', 'onychomycosis', 'furunculosis', 'scabies', 'herpes zoster']
+  },
+  {
+    id: 'dnd-326',
+    code: 'DND 326',
+    name: 'Reproductive Health & Gynaecology',
+    description: 'Women health, gynaecological conditions, and HIV/AIDS management',
+    icon: 'Heart',
+    color: '#ec4899',
+    semesterId: 'year-3-semester-2',
+    keywords: ['reproductive health', 'abnormal vaginal discharge', 'cancers of reproductive health organs', 'congenital abnormalities of the reproductive organs', 'integration of reproductive health', 'family planning counseling', 'hormonal contraceptive methods', 'menstruation disorders', 'introduction to reproductive health', 'introduction to gynaecology', 'internal and external female reproductive organs', 'history physical examination and investigations in gynaecology', 'investigations in gynaecology', 'sexually transmitted diseases', 'prevention and control of hiv', 'management of hiv/aids and hepatitis', 'management of hiv', 'opportunistic infections in hiv', 'adolescent reproductive health', 'vulnerable groups in adoloscent', 'adolescent friendly health services', 'adolescent sexuality', 'drugs used in labor', 'post-exposure prophylaxis', 'pep', 'post exposure prophylaxis']
   }
 ];
 
@@ -367,7 +377,13 @@ export function getSemesterForTopic(title: string, description: string = ''): st
 
 // Function to determine course unit for a topic
 export function getCourseUnitForTopic(title: string, description: string = ''): string {
-  const searchText = `${title} ${description}`.toLowerCase();
+  // Normalize text: convert Unicode quotes to ASCII apostrophes
+  const normalizeText = (text: string) => 
+    text.toLowerCase()
+      .replace(/['']/g, "'")  // Normalize curly quotes to straight apostrophe
+      .replace(/[""]/g, '"'); // Normalize curly double quotes
+  
+  const searchText = normalizeText(`${title} ${description}`);
   
   for (const courseUnit of courseUnitsData) {
     for (const keyword of courseUnit.keywords) {
