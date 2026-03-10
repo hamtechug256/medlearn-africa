@@ -1,0 +1,49 @@
+▲ Next.js 16.1.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://21.0.13.19:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 1039ms
+
+thread 'tokio-runtime-worker' (2569) panicked at /build/turbopack/crates/turbo-tasks-backend/src/backend/operation/mod.rs:156:17:
+Failed to restore task data (corrupted database or bug): Data for <DiskFileSystem as FileSystem>::read (TaskId 82824))
+
+Caused by:
+    0: Looking up data for TaskId 82824 from database failed
+    1: Invalid argument (os error 22)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to /tmp/next-panic-a42a1bf36369b6294a880b56f7b3d4fb.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20Failed%20to%20restore%20task%20data%20%28corrupted%20database%20or%20bug%29%3A%20Data%20for%20%3CDiskFileSystem%20as%20FileSystem%3E%3A%3Aread%20%28TaskId%2082824%29%29&body=Turbopack%20version%3A%20%60731ace46%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20Failed%20to%20restore%20task%20data%20%28corrupted%20database%20or%20bug%29%3A%20Data%20for%20%3CDiskFileSystem%20as%20FileSystem%3E%3A%3Aread%20%28TaskId%2082824%29%29%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+
+ GET / 500 in 1325ms (compile: 1208ms, render: 117ms)
+⚠ Cross origin request detected from preview-chat-93e68730-51a6-4ed9-b1fb-a1f696b38e10.space.z.ai to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+
+thread 'tokio-runtime-worker' (2570) panicked at /build/turbopack/crates/turbo-tasks-backend/src/backend/operation/mod.rs:156:17:
+Failed to restore task data (corrupted database or bug): Data for read_matches (TaskId 41389))
+
+Caused by:
+    0: Looking up data for TaskId 41389 from database failed
+    1: Unable to open static sorted file referenced from 00000688.meta
+    2: Unable to open static sorted file 00000687.sst
+    3: No such file or directory (os error 2)
+
+thread 'tokio-runtime-worker' (2570) panicked at /build/turbopack/crates/turbo-tasks-backend/src/backend/operation/mod.rs:156:17:
+Failed to restore task data (corrupted database or bug): Data for get_type (TaskId 4241))
+
+Caused by:
+    0: Looking up data for TaskId 4241 from database failed
+    1: Unable to open static sorted file referenced from 00000688.meta
+    2: Unable to open static sorted file 00000687.sst
+    3: No such file or directory (os error 2)
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+[?25h

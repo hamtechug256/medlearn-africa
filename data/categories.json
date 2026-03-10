@@ -1,0 +1,62 @@
+[
+  {
+    "id": "general-nursing",
+    "name": "General Nursing",
+    "count": 254,
+    "description": "Core nursing concepts, patient care fundamentals, and general medical knowledge"
+  },
+  {
+    "id": "pediatric-nursing",
+    "name": "Pediatric Nursing",
+    "count": 43,
+    "description": "Nursing care for infants, children, and adolescents"
+  },
+  {
+    "id": "mental-health-nursing",
+    "name": "Mental Health Nursing",
+    "count": 32,
+    "description": "Psychiatric nursing, mental health disorders, and therapeutic interventions"
+  },
+  {
+    "id": "anatomy-physiology",
+    "name": "Anatomy & Physiology",
+    "count": 31,
+    "description": "Human body systems, structures, and physiological processes"
+  },
+  {
+    "id": "pharmacology",
+    "name": "Pharmacology",
+    "count": 23,
+    "description": "Drug classifications, medications, dosages, and nursing implications"
+  },
+  {
+    "id": "community-health",
+    "name": "Community Health",
+    "count": 21,
+    "description": "Public health, community nursing, and health promotion"
+  },
+  {
+    "id": "research-ethics",
+    "name": "Research & Ethics",
+    "count": 21,
+    "description": "Nursing research methods, ethical principles, and professional standards"
+  },
+  {
+    "id": "medical-surgical-nursing",
+    "name": "Medical-Surgical Nursing",
+    "count": 14,
+    "description": "Pre-operative and post-operative care, surgical nursing procedures"
+  },
+  {
+    "id": "emergency-nursing",
+    "name": "Emergency Nursing",
+    "count": 14,
+    "description": "Emergency care, trauma management, and critical nursing interventions"
+  },
+  {
+    "id": "maternal-child-health",
+    "name": "Maternal & Child Health",
+    "count": 5,
+    "description": "Pregnancy, childbirth, postnatal care, and maternal health"
+  }
+]
