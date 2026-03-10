@@ -22,9 +22,9 @@ const navItems = [
   { href: '/admin/migrate', label: 'Data Migration', icon: Database },
 ]
 
-async function Sidebar() {
+function Sidebar() {
   return (
-    <>
+    <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r bg-background">
       <div className="flex h-16 items-center border-b px-6">
         <Link href="/admin" className="flex items-center gap-2 font-semibold text-lg">
           <Settings className="h-6 w-6 text-primary" />
@@ -51,7 +51,7 @@ async function Sidebar() {
           </Button>
         </form>
       </div>
-    </>
+    </aside>
   )
 }
 
@@ -63,20 +63,16 @@ export default async function AdminLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
+  // Redirect to login page (outside admin folder) if not authenticated
   if (!user) {
-    redirect('/admin/login')
+    redirect('/auth/login')
   }
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r bg-background">
-        <Sidebar />
-      </aside>
+      <Sidebar />
       
-      {/* Main Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Mobile Header */}
         <header className="flex h-14 items-center gap-4 border-b px-4 lg:hidden">
           <Link href="/admin" className="flex items-center gap-2 font-semibold">
             <Settings className="h-5 w-5 text-primary" />
@@ -84,7 +80,6 @@ export default async function AdminLayout({
           </Link>
         </header>
         
-        {/* Page Content */}
         <main className="flex-1 overflow-auto bg-muted/30">
           <div className="container mx-auto p-4 lg:p-6">
             {children}

@@ -1,5 +1,5 @@
 import LoginPageClient from './LoginPageClient'
 
-export default function AdminLoginPage() {
+export default function LoginPage() {
   return <LoginPageClient />
 }
