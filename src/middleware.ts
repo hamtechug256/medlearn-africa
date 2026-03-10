@@ -1,23 +1,27 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-
-  // Allow public routes and admin login page
-  if (!pathname.startsWith('/admin') || pathname === '/admin/login') {
+  
+  // Only protect admin routes, not the login page
+  // Login page handles its own auth check client-side
+  if (pathname === '/admin/login') {
     return NextResponse.next()
   }
-
-  // Check for auth token cookie (simple cookie check)
-  const authToken = request.cookies.get('sb-access-token')?.value || 
-                    request.cookies.get('supabase-auth-token')?.value
-
-  // If no auth token, redirect to login
-  if (!authToken) {
-    const loginUrl = new URL('/admin/login', request.url)
-    return NextResponse.redirect(loginUrl)
+  
+  // For other admin routes, check for Supabase auth cookie
+  if (pathname.startsWith('/admin')) {
+    // Check for any Supabase auth cookie
+    const hasAuth = request.cookies.getAll().some(cookie => 
+      cookie.name.includes('sb-') && cookie.name.includes('auth')
+    )
+    
+    if (!hasAuth) {
+      const loginUrl = new URL('/admin/login', request.url)
+      return NextResponse.redirect(loginUrl)
+    }
   }
-
+  
   return NextResponse.next()
 }
 
