@@ -13,7 +13,7 @@ export function LogoutButton() {
     setLoading(true)
     try {
       await fetch('/api/admin/logout', { method: 'POST' })
-      router.push('/admin/login')
+      router.push('/auth/admin-login')
       router.refresh()
     } catch (error) {
       console.error('Logout error:', error)
