@@ -9,54 +9,45 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table'
 import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import {
-  Users, UserPlus, Search, MoreHorizontal, Shield, Edit, Trash2,
-  Mail, Calendar, Key
+  Users, UserPlus, Search, Shield, Edit, Trash2, Key, AlertTriangle
 } from 'lucide-react'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { MoreHorizontal } from 'lucide-react'
 
-interface User {
-  id: string
-  username: string
-  email: string
-  role: 'super_admin' | 'admin' | 'editor' | 'viewer'
-  status: 'active' | 'inactive'
-  lastLogin: string
-  createdAt: string
+// Default admin user (from admin-auth.ts)
+const defaultAdmin = {
+  id: 'admin-1',
+  username: 'admin',
+  email: 'admin@medlearnafrica.com',
+  role: 'super_admin' as const,
+  status: 'active' as const,
+  lastLogin: new Date().toLocaleString(),
+  createdAt: '2024-01-01'
 }
 
-const mockUsers: User[] = [
-  {
-    id: '1',
-    username: 'admin',
-    email: 'admin@medlearnafrica.com',
-    role: 'super_admin',
-    status: 'active',
-    lastLogin: '2024-01-15 10:30',
-    createdAt: '2023-01-01'
-  },
-]
-
 export default function UsersPage() {
-  const [users] = useState<User[]>(mockUsers)
+  const [users] = useState([defaultAdmin])
   const [search, setSearch] = useState('')
+  const [resetPasswordDialog, setResetPasswordDialog] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<typeof defaultAdmin | null>(null)
 
   const filteredUsers = users.filter(user =>
     user.username.toLowerCase().includes(search.toLowerCase()) ||
     user.email.toLowerCase().includes(search.toLowerCase())
   )
 
-  const getRoleBadge = (role: User['role']) => {
+  const getRoleBadge = (role: typeof defaultAdmin.role) => {
     const variants = {
-      super_admin: 'bg-red-100 text-red-700',
-      admin: 'bg-blue-100 text-blue-700',
-      editor: 'bg-green-100 text-green-700',
-      viewer: 'bg-gray-100 text-gray-700'
+      super_admin: 'bg-red-100 text-red-700 border-red-200',
+      admin: 'bg-blue-100 text-blue-700 border-blue-200',
+      editor: 'bg-green-100 text-green-700 border-green-200',
+      viewer: 'bg-gray-100 text-gray-700 border-gray-200'
     }
     return (
       <Badge variant="outline" className={variants[role]}>
@@ -65,7 +56,7 @@ export default function UsersPage() {
     )
   }
 
-  const getStatusBadge = (status: User['status']) => {
+  const getStatusBadge = (status: typeof defaultAdmin.status) => {
     return status === 'active'
       ? <Badge className="bg-green-500">Active</Badge>
       : <Badge variant="secondary">Inactive</Badge>
@@ -75,8 +66,8 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
-          <p className="text-muted-foreground">Manage admin users and their permissions</p>
+          <h1 className="text-3xl font-bold">Admin Users</h1>
+          <p className="text-muted-foreground">Manage administrator access to the system</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -87,8 +78,10 @@ export default function UsersPage() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New User</DialogTitle>
-              <DialogDescription>Add a new admin user to the system</DialogDescription>
+              <DialogTitle>Create New Admin User</DialogTitle>
+              <DialogDescription>
+                Add a new administrator with specific permissions
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 pt-4">
               <div className="space-y-2">
@@ -105,7 +98,7 @@ export default function UsersPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Role</Label>
-                <select id="role" className="w-full border rounded-md p-2">
+                <select id="role" className="w-full border rounded-md p-2 bg-background">
                   <option value="viewer">Viewer</option>
                   <option value="editor">Editor</option>
                   <option value="admin">Admin</option>
@@ -118,10 +111,27 @@ export default function UsersPage() {
         </Dialog>
       </div>
 
+      {/* Current User Info */}
+      <Card className="border-blue-200 bg-blue-50/50">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+              <span className="text-sm font-bold text-primary-foreground">A</span>
+            </div>
+            <div>
+              <p className="font-medium">You are logged in as <strong>{defaultAdmin.username}</strong></p>
+              <p className="text-sm text-muted-foreground">
+                Default password: <code className="bg-muted px-1 rounded">medlearn2024</code>
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>All Users</CardTitle>
+            <CardTitle>All Admin Users</CardTitle>
             <div className="relative w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -174,13 +184,9 @@ export default function UsersPage() {
                           <Edit className="h-4 w-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { setSelectedUser(user); setResetPasswordDialog(true); }}>
                           <Key className="h-4 w-4 mr-2" />
                           Reset Password
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -210,6 +216,7 @@ export default function UsersPage() {
                 <li>• Manage all users</li>
                 <li>• Database operations</li>
                 <li>• System settings</li>
+                <li>• Content management</li>
               </ul>
             </div>
             <div className="p-4 border rounded-lg">
@@ -219,6 +226,7 @@ export default function UsersPage() {
                 <li>• Edit topics & categories</li>
                 <li>• Upload media</li>
                 <li>• View analytics</li>
+                <li>• Limited settings</li>
               </ul>
             </div>
             <div className="p-4 border rounded-lg">
@@ -228,6 +236,7 @@ export default function UsersPage() {
                 <li>• Upload images</li>
                 <li>• Edit content</li>
                 <li>• Limited settings</li>
+                <li>• No user management</li>
               </ul>
             </div>
             <div className="p-4 border rounded-lg">
@@ -237,11 +246,40 @@ export default function UsersPage() {
                 <li>• Read-only access</li>
                 <li>• Export data</li>
                 <li>• No edit rights</li>
+                <li>• No user management</li>
               </ul>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Reset Password Dialog */}
+      <Dialog open={resetPasswordDialog} onOpenChange={setResetPasswordDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Admin Password</DialogTitle>
+            <DialogDescription>
+              Change the password for {selectedUser?.username}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label>New Password</Label>
+              <Input type="password" placeholder="Enter new password" />
+            </div>
+            <div className="space-y-2">
+              <Label>Confirm Password</Label>
+              <Input type="password" placeholder="Confirm new password" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setResetPasswordDialog(false)}>
+              Cancel
+            </Button>
+            <Button>Update Password</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

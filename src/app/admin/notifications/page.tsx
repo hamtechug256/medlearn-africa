@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import {
-  Bell, BellRing, Check, Trash2, Settings, Mail, MessageSquare,
-  AlertTriangle, Info, CheckCircle, Clock
+  Bell, BellRing, Check, Trash2, Settings, Database,
+  AlertTriangle, Info, CheckCircle, Clock, FileText,
+  RefreshCw, Loader2
 } from 'lucide-react'
 
 interface Notification {
@@ -20,43 +21,98 @@ interface Notification {
   read: boolean
 }
 
-const mockNotifications: Notification[] = [
-  {
-    id: '1',
-    title: 'Migration Complete',
-    message: 'Successfully migrated 457 topics to the database.',
-    type: 'success',
-    time: '2 minutes ago',
-    read: false
-  },
-  {
-    id: '2',
-    title: 'New User Registered',
-    message: 'A new admin user has been created.',
-    type: 'info',
-    time: '1 hour ago',
-    read: false
-  },
-  {
-    id: '3',
-    title: 'Storage Warning',
-    message: 'Storage usage is at 85% capacity.',
-    type: 'warning',
-    time: '3 hours ago',
-    read: true
-  },
-  {
-    id: '4',
-    title: 'Content Updated',
-    message: 'Cardiovascular System topic has been updated.',
-    type: 'info',
-    time: 'Yesterday',
-    read: true
-  },
-]
-
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState(mockNotifications)
+  const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [dbStatus, setDbStatus] = useState({ connected: false, topicCount: 0 })
+
+  useEffect(() => {
+    fetchNotifications()
+  }, [])
+
+  const fetchNotifications = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/admin/stats')
+      const data = await res.json()
+      
+      setDbStatus({
+        connected: data?.dbStatus?.connected || false,
+        topicCount: data?.dbStatus?.topicCount || 0
+      })
+
+      // Generate notifications based on actual system state
+      const notifs: Notification[] = []
+
+      if (!data?.dbStatus?.connected) {
+        notifs.push({
+          id: '1',
+          title: 'Database Not Connected',
+          message: 'Please run the SQL schema in Supabase and perform a migration to sync your data.',
+          type: 'warning',
+          time: 'Just now',
+          read: false
+        })
+      } else if (data?.dbStatus?.topicCount === 0) {
+        notifs.push({
+          id: '2',
+          title: 'No Data in Database',
+          message: 'Database is connected but contains no topics. Run the migration to sync 457 topics.',
+          type: 'warning',
+          time: 'Just now',
+          read: false
+        })
+      } else {
+        notifs.push({
+          id: '3',
+          title: 'Database Connected',
+          message: `Successfully synced ${data.dbStatus.topicCount} topics to Supabase.`,
+          type: 'success',
+          time: 'Recently',
+          read: false
+        })
+      }
+
+      // Add content status notifications
+      if (data?.totalTopics > 0) {
+        notifs.push({
+          id: '4',
+          title: 'Content Available',
+          message: `${data.totalTopics} topics ready across ${data.totalSemesters} semesters.`,
+          type: 'info',
+          time: 'System',
+          read: true
+        })
+      }
+
+      setNotifications(notifs)
+    } catch (error) {
+      console.error('Error fetching notifications:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSync = async () => {
+    setSyncing(true)
+    try {
+      const res = await fetch('/api/admin/migrate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ step: 'all' })
+      })
+      
+      if (res.ok) {
+        await fetchNotifications()
+      }
+    } catch (error) {
+      console.error('Error syncing:', error)
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   const markAsRead = (id: string) => {
     setNotifications(notifications.map(n =>
@@ -101,12 +157,33 @@ export default function NotificationsPage() {
             <Check className="h-4 w-4 mr-2" />
             Mark All Read
           </Button>
-          <Button variant="outline">
-            <Settings className="h-4 w-4 mr-2" />
-            Settings
+          <Button onClick={handleSync} disabled={syncing}>
+            {syncing ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4 mr-2" />
+            )}
+            Sync Database
           </Button>
         </div>
       </div>
+
+      {/* Database Status Alert */}
+      {!dbStatus.connected && (
+        <Card className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-yellow-800 dark:text-yellow-200">Action Required</h3>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                  Run the SQL schema in Supabase SQL Editor, then click "Sync Database" above to migrate your content.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Notifications List */}
@@ -114,17 +191,21 @@ export default function NotificationsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BellRing className="h-5 w-5" />
-              Recent Notifications
+              System Notifications
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y">
-              {notifications.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground">
-                  No notifications
-                </div>
-              ) : (
-                notifications.map((notification) => (
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground">
+                No notifications
+              </div>
+            ) : (
+              <div className="divide-y">
+                {notifications.map((notification) => (
                   <div
                     key={notification.id}
                     className={`p-4 flex gap-4 ${!notification.read ? 'bg-muted/50' : ''}`}
@@ -164,64 +245,67 @@ export default function NotificationsPage() {
                       </Button>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Notification Settings */}
         <Card>
           <CardHeader>
-            <CardTitle>Notification Preferences</CardTitle>
-            <CardDescription>Manage how you receive notifications</CardDescription>
+            <CardTitle>Quick Settings</CardTitle>
+            <CardDescription>Manage system preferences</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <Label htmlFor="email">Email Notifications</Label>
+                  <Database className="h-4 w-4 text-muted-foreground" />
+                  <Label>Auto-sync enabled</Label>
                 </div>
-                <Switch id="email" defaultChecked />
+                <Switch defaultChecked={false} />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <Label>Content alerts</Label>
+                </div>
+                <Switch defaultChecked />
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Bell className="h-4 w-4 text-muted-foreground" />
-                  <Label htmlFor="push">Push Notifications</Label>
+                  <Label>System alerts</Label>
                 </div>
-                <Switch id="push" defaultChecked />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                  <Label htmlFor="sms">SMS Alerts</Label>
-                </div>
-                <Switch id="sms" />
+                <Switch defaultChecked />
               </div>
             </div>
 
             <div className="pt-4 border-t">
-              <h4 className="font-medium mb-4">Notify me about:</h4>
-              <div className="space-y-3">
-                {[
-                  'New user registrations',
-                  'Content updates',
-                  'System errors',
-                  'Storage warnings',
-                  'Security alerts',
-                ].map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <input type="checkbox" id={item} defaultChecked className="rounded" />
-                    <Label htmlFor={item} className="text-sm font-normal">{item}</Label>
+              <h4 className="font-medium mb-4">Database Status</h4>
+              <div className="p-4 bg-muted rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Status</span>
+                  <Badge variant={dbStatus.connected ? "default" : "secondary"} className={dbStatus.connected ? "bg-green-500" : ""}>
+                    {dbStatus.connected ? 'Connected' : 'Not Connected'}
+                  </Badge>
+                </div>
+                {dbStatus.connected && (
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-sm">Topics synced</span>
+                    <span className="font-medium">{dbStatus.topicCount}</span>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
-            <Button className="w-full">Save Preferences</Button>
+            <Button className="w-full" variant="outline" onClick={() => window.open('/admin/migrate', '_self')}>
+              <Database className="h-4 w-4 mr-2" />
+              Go to Migration
+            </Button>
           </CardContent>
         </Card>
       </div>

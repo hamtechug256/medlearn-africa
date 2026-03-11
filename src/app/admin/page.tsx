@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -6,23 +9,89 @@ import {
   FileText, FolderTree, BookOpen, Calendar, Database, Users,
   FileEdit, Image, Tag, BarChart3, Bell, Settings, Activity,
   TrendingUp, Eye, Clock, CheckCircle, AlertTriangle, RefreshCw,
-  Shield, Server, HardDrive, Zap
+  Shield, Server, HardDrive, Zap, Loader2
 } from 'lucide-react'
 import Link from 'next/link'
 
+interface DashboardStats {
+  totalTopics: number
+  totalCategories: number
+  totalCourseUnits: number
+  totalSemesters: number
+  totalImages: number
+  totalWords: number
+  topicsPerSemester: { name: string; count: number }[]
+  topicsPerCategory: { name: string; count: number }[]
+  recentTopics: { id: string; title: string; semester: string }[]
+  dbStatus: {
+    connected: boolean
+    topicCount: number
+    courseUnitCount: number
+    semesterCount: number
+    categoryCount: number
+  }
+}
+
 export default function AdminDashboard() {
-  const stats = [
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  const fetchStats = async () => {
+    setLoading(true)
+    try {
+      // Fetch local data stats
+      const res = await fetch('/api/admin/stats')
+      const data = await res.json()
+      setStats(data)
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSync = async () => {
+    setSyncing(true)
+    try {
+      await fetch('/api/admin/migrate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ step: 'all' })
+      })
+      await fetchStats()
+    } catch (error) {
+      console.error('Error syncing:', error)
+    } finally {
+      setSyncing(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  const statCards = [
     {
       title: 'Total Topics',
-      value: '457',
+      value: stats?.totalTopics || 457,
       icon: FileText,
       color: 'text-blue-600',
       bg: 'bg-blue-100',
-      change: '+12 this week'
+      change: `${stats?.dbStatus?.topicCount || 0} in database`
     },
     {
       title: 'Categories',
-      value: '10',
+      value: stats?.totalCategories || 10,
       icon: FolderTree,
       color: 'text-green-600',
       bg: 'bg-green-100',
@@ -30,15 +99,15 @@ export default function AdminDashboard() {
     },
     {
       title: 'Course Units',
-      value: '24',
+      value: stats?.totalCourseUnits || 24,
       icon: BookOpen,
       color: 'text-purple-600',
       bg: 'bg-purple-100',
-      change: '6 semesters'
+      change: `${stats?.totalSemesters || 6} semesters`
     },
     {
       title: 'Images',
-      value: '~2,000',
+      value: stats?.totalImages?.toLocaleString() || '~2,000',
       icon: Image,
       color: 'text-orange-600',
       bg: 'bg-orange-100',
@@ -51,24 +120,11 @@ export default function AdminDashboard() {
     { title: 'Content Editor', href: '/admin/content', icon: FileEdit, description: 'Edit topic content' },
     { title: 'Media Library', href: '/admin/media', icon: Image, description: 'Manage images and files' },
     { title: 'Data Migration', href: '/admin/migrate', icon: Database, description: 'Sync data to Supabase' },
-    { title: 'User Management', href: '/admin/users', icon: Users, description: 'Manage admin users' },
-    { title: 'Analytics', href: '/admin/analytics', icon: BarChart3, description: 'View site statistics' },
+    { title: 'Categories', href: '/admin/categories', icon: FolderTree, description: 'Manage categories' },
+    { title: 'Semesters', href: '/admin/semesters', icon: Calendar, description: 'Manage semesters' },
   ]
 
-  const systemStatus = [
-    { name: 'Database', status: 'connected', icon: Server },
-    { name: 'Storage', status: 'active', icon: HardDrive },
-    { name: 'API', status: 'running', icon: Zap },
-    { name: 'Cache', status: 'enabled', icon: Activity },
-  ]
-
-  const recentActivity = [
-    { action: 'Topic updated', item: 'Cardiovascular System', time: '2 min ago', type: 'update' },
-    { action: 'New topic added', item: 'Diabetes Management', time: '15 min ago', type: 'create' },
-    { action: 'Image uploaded', item: 'heart-anatomy.png', time: '1 hour ago', type: 'upload' },
-    { action: 'Category created', item: 'Emergency Care', time: '3 hours ago', type: 'create' },
-    { action: 'Migration completed', item: '457 topics synced', time: 'Yesterday', type: 'migration' },
-  ]
+  const dbConnected = stats?.dbStatus?.connected
 
   return (
     <div className="space-y-6">
@@ -77,24 +133,28 @@ export default function AdminDashboard() {
         <div>
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           <p className="text-muted-foreground">
-            Welcome back! Here's your Medlearn Africa overview.
+            Medlearn Africa - Nursing Education Platform
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={fetchStats}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
-          <Button size="sm">
-            <Database className="h-4 w-4 mr-2" />
-            Sync Data
+          <Button size="sm" onClick={handleSync} disabled={syncing}>
+            {syncing ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Database className="h-4 w-4 mr-2" />
+            )}
+            Sync to DB
           </Button>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
+        {statCards.map((stat) => (
           <Card key={stat.title} className="hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -141,107 +201,129 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* System Status */}
+        {/* Database Status */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              System Status
+              Database Status
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {systemStatus.map((item) => (
-              <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <item.icon className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{item.name}</span>
-                </div>
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                  {item.status}
-                </Badge>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Server className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Supabase</span>
               </div>
-            ))}
+              <Badge variant="outline" className={dbConnected ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}>
+                {dbConnected ? 'Connected' : 'Not Connected'}
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Topics</span>
+              </div>
+              <span className="text-sm font-medium">{stats?.dbStatus?.topicCount || 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Course Units</span>
+              </div>
+              <span className="text-sm font-medium">{stats?.dbStatus?.courseUnitCount || 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Semesters</span>
+              </div>
+              <span className="text-sm font-medium">{stats?.dbStatus?.semesterCount || 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FolderTree className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Categories</span>
+              </div>
+              <span className="text-sm font-medium">{stats?.dbStatus?.categoryCount || 0}</span>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent Activity & Storage */}
+      {/* Topics Per Semester & Category */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Recent Activity */}
+        {/* Topics Per Semester */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Recent Activity
+              <Calendar className="h-5 w-5" />
+              Topics per Semester
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className={`mt-1 p-1 rounded-full ${
-                    activity.type === 'create' ? 'bg-green-100' :
-                    activity.type === 'update' ? 'bg-blue-100' :
-                    activity.type === 'upload' ? 'bg-purple-100' :
-                    'bg-orange-100'
-                  }`}>
-                    {activity.type === 'create' && <CheckCircle className="h-3 w-3 text-green-600" />}
-                    {activity.type === 'update' && <RefreshCw className="h-3 w-3 text-blue-600" />}
-                    {activity.type === 'upload' && <Image className="h-3 w-3 text-purple-600" />}
-                    {activity.type === 'migration' && <Database className="h-3 w-3 text-orange-600" />}
+            <div className="space-y-3">
+              {stats?.topicsPerSemester?.map((sem) => (
+                <div key={sem.name} className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span>{sem.name}</span>
+                    <span className="font-medium">{sem.count}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{activity.action}</span>
-                      <span className="text-xs text-muted-foreground">{activity.time}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground truncate">{activity.item}</p>
-                  </div>
+                  <Progress 
+                    value={(sem.count / (stats?.totalTopics || 457)) * 100} 
+                    className="h-2" 
+                  />
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        {/* Storage Overview */}
+        {/* Topics Per Category */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <HardDrive className="h-5 w-5" />
-              Storage Overview
+              <FolderTree className="h-5 w-5" />
+              Topics per Category
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent>
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Topic Images</span>
-                <span>~150 MB</span>
-              </div>
-              <Progress value={60} className="h-2" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Documents</span>
-                <span>~25 MB</span>
-              </div>
-              <Progress value={10} className="h-2" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Database</span>
-                <span>~50 MB</span>
-              </div>
-              <Progress value={20} className="h-2" />
-            </div>
-            <div className="pt-4 border-t">
-              <div className="flex justify-between text-sm">
-                <span className="font-medium">Total Used</span>
-                <span className="font-medium">~225 MB / 1 GB</span>
-              </div>
+              {stats?.topicsPerCategory?.slice(0, 8).map((cat) => (
+                <div key={cat.name} className="flex items-center justify-between">
+                  <span className="text-sm">{cat.name}</span>
+                  <Badge variant="secondary">{cat.count}</Badge>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Recent Topics */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Activity className="h-5 w-5" />
+            Recent Topics
+          </CardTitle>
+          <CardDescription>Latest topics in your content library</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+            {stats?.recentTopics?.map((topic) => (
+              <Link
+                key={topic.id}
+                href={`/admin/content?id=${topic.id}`}
+                className="p-3 rounded-lg border hover:bg-muted transition-colors"
+              >
+                <div className="font-medium text-sm truncate">{topic.title}</div>
+                <div className="text-xs text-muted-foreground mt-1">{topic.semester}</div>
+              </Link>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Getting Started Guide */}
       <Card>
