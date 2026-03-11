@@ -28,11 +28,12 @@ export default function MigrationPage() {
     setLoading(true)
     setError(null)
     setResult(null)
-    
+
     try {
       const res = await fetch('/api/admin/migrate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ step: 'all' })
       })
       

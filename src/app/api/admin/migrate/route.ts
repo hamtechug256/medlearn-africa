@@ -1,28 +1,29 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { isAdminAuthenticated } from '@/lib/admin-auth'
+import { createClient } from '@/lib/supabase/server'
 import fs from 'fs'
 import path from 'path'
 
 // Migrate existing data to Supabase
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // Check admin authentication
+  const isAuthenticated = await isAdminAuthenticated()
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: 'Unauthorized - Admin login required' }, { status: 401 })
   }
-  
+
+  const supabase = await createClient()
   const body = await request.json()
   const { step } = body
-  
+
   const dataDir = path.join(process.cwd(), 'data')
-  
+
   try {
     // Step 1: Migrate Semesters
     if (step === 'semesters' || step === 'all') {
       const curriculumPath = path.join(dataDir, 'course-units.json')
       const curriculumData = JSON.parse(fs.readFileSync(curriculumPath, 'utf-8'))
-      
+
       for (let i = 0; i < curriculumData.semesters.length; i++) {
         const sem = curriculumData.semesters[i]
         await supabase.from('semesters').upsert({
@@ -36,12 +37,12 @@ export async function POST(request: Request) {
         }, { onConflict: 'id' })
       }
     }
-    
+
     // Step 2: Migrate Categories
     if (step === 'categories' || step === 'all') {
       const categoriesPath = path.join(dataDir, 'categories.json')
       const categoriesData = JSON.parse(fs.readFileSync(categoriesPath, 'utf-8'))
-      
+
       for (const cat of categoriesData) {
         await supabase.from('categories').upsert({
           id: cat.id,
@@ -52,12 +53,12 @@ export async function POST(request: Request) {
         }, { onConflict: 'id' })
       }
     }
-    
+
     // Step 3: Migrate Course Units
     if (step === 'course-units' || step === 'all') {
       const curriculumPath = path.join(dataDir, 'course-units.json')
       const curriculumData = JSON.parse(fs.readFileSync(curriculumPath, 'utf-8'))
-      
+
       for (const sem of curriculumData.semesters) {
         for (let i = 0; i < sem.courseUnits.length; i++) {
           const cu = sem.courseUnits[i]
@@ -75,26 +76,26 @@ export async function POST(request: Request) {
         }
       }
     }
-    
+
     // Step 4: Migrate Topics
     if (step === 'topics' || step === 'all') {
       const topicsIndexPath = path.join(dataDir, 'topics-index.json')
       const topicsData = JSON.parse(fs.readFileSync(topicsIndexPath, 'utf-8'))
-      
+
       // Get course units for keyword matching
       const { data: courseUnits } = await supabase
         .from('course_units')
         .select('id, keywords, name')
-      
+
       const batchSize = 50
       for (let i = 0; i < topicsData.length; i += batchSize) {
         const batch = topicsData.slice(i, i + batchSize)
-        
+
         const topicsToInsert = batch.map((topic: { id: string; title: string; category: string; description: string; wordCount: number; images: string[]; semester: string }) => {
           // Find matching course unit by keyword
           let matchedCourseUnitId: string | null = null
           const topicTitleLower = topic.title.toLowerCase()
-          
+
           if (courseUnits) {
             for (const cu of courseUnits) {
               if (cu.keywords && cu.keywords.length > 0) {
@@ -108,12 +109,12 @@ export async function POST(request: Request) {
               if (matchedCourseUnitId) break
             }
           }
-          
+
           return {
             id: topic.id,
             title: topic.title,
             slug: topic.id,
-            category_id: null, // We'll need to match categories differently
+            category_id: null,
             course_unit_id: matchedCourseUnitId,
             semester_id: topic.semester || null,
             description: topic.description || '',
@@ -122,28 +123,28 @@ export async function POST(request: Request) {
             is_published: true
           }
         })
-        
+
         const { error } = await supabase
           .from('topics')
           .upsert(topicsToInsert, { onConflict: 'id' })
-        
+
         if (error) {
           console.error('Error inserting batch:', error)
         }
       }
     }
-    
+
     // Step 5: Migrate Topic Content
     if (step === 'content' || step === 'all') {
       const topicsDir = path.join(dataDir, 'topics')
       const files = fs.readdirSync(topicsDir)
-      
+
       for (const file of files) {
         if (!file.endsWith('.json')) continue
-        
+
         const filePath = path.join(topicsDir, file)
         const content = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
-        
+
         if (content.id && content.content) {
           await supabase
             .from('topics')
@@ -152,24 +153,24 @@ export async function POST(request: Request) {
         }
       }
     }
-    
+
     // Get counts
     const { count: topicCount } = await supabase
       .from('topics')
       .select('*', { count: 'exact', head: true })
-    
+
     const { count: courseUnitCount } = await supabase
       .from('course_units')
       .select('*', { count: 'exact', head: true })
-    
+
     const { count: semesterCount } = await supabase
       .from('semesters')
       .select('*', { count: 'exact', head: true })
-    
+
     const { count: categoryCount } = await supabase
       .from('categories')
       .select('*', { count: 'exact', head: true })
-    
+
     return NextResponse.json({
       success: true,
       message: `Migration complete!`,
@@ -180,12 +181,54 @@ export async function POST(request: Request) {
         categories: categoryCount
       }
     })
-    
+
   } catch (error) {
     console.error('Migration error:', error)
-    return NextResponse.json({ 
-      error: 'Migration failed', 
-      details: error instanceof Error ? error.message : 'Unknown error' 
+    return NextResponse.json({
+      error: 'Migration failed',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
+  }
+}
+
+// GET - Get migration status
+export async function GET() {
+  const isAuthenticated = await isAdminAuthenticated()
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const supabase = await createClient()
+
+  try {
+    const { count: topicCount } = await supabase
+      .from('topics')
+      .select('*', { count: 'exact', head: true })
+
+    const { count: courseUnitCount } = await supabase
+      .from('course_units')
+      .select('*', { count: 'exact', head: true })
+
+    const { count: semesterCount } = await supabase
+      .from('semesters')
+      .select('*', { count: 'exact', head: true })
+
+    const { count: categoryCount } = await supabase
+      .from('categories')
+      .select('*', { count: 'exact', head: true })
+
+    return NextResponse.json({
+      counts: {
+        topics: topicCount,
+        courseUnits: courseUnitCount,
+        semesters: semesterCount,
+        categories: categoryCount
+      }
+    })
+  } catch (error) {
+    return NextResponse.json({
+      error: 'Failed to get status',
+      details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }
 }
